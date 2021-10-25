@@ -19,10 +19,11 @@ public class Test {
         System.out.println();
 
         // Get balance of account
-        System.out.println("Balance of account1 = "  +  ingBank.findAccount(account1).balance);
-        System.out.println("Balance of account2 = "  +  ingBank.findAccount(account2).balance);
-        System.out.println("Balance of account3 = "  +  ingBank.findAccount(account3).balance);
-        System.out.println("Balance of account4 = "  +  ingBank.findAccount(account4).balance);
+        // 2-c
+        System.out.println("Balance of account1 = "  +  ingBank.findAccount(account1).getBalance());
+        System.out.println("Balance of account2 = "  +  ingBank.findAccount(account2).getBalance());
+        System.out.println("Balance of account3 = "  +  ingBank.findAccount(account3).getBalance());
+        System.out.println("Balance of account4 = "  +  ingBank.findAccount(account4).getBalance());
         System.out.println();
 
         // Show Money in the Bank

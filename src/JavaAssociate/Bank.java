@@ -3,10 +3,10 @@ package JavaAssociate;
 import java.util.Random;
 
 public class Bank {
-    // 1-b-a
-    public Account[] accounts;
-    public int numberOfAccountsInUse = 0;
-    public static int MAXACCOUNTS = 10;
+    // 1-b-a, 2-a
+    private Account[] accounts;
+    private int numberOfAccountsInUse = 0;
+    private final static int MAXACCOUNTS = 10;
 
     // Constructor
     // 1-b-a
@@ -16,7 +16,7 @@ public class Bank {
     }
 
     // Basic Methods
-    // 1-b-b-i
+    // 1-b-b-i, 2-c
     /**
      *
      * @param amount as deposited by Customer on opening of Account
@@ -24,12 +24,14 @@ public class Bank {
      *
      */
     public int openAccount( double amount ) {
-        Account account = new Account ( generateAccountNumber(), amount );
+        int accountNumber = generateAccountNumber();
+
+        Account account = new Account ( accountNumber, amount );
 
         accounts[ numberOfAccountsInUse ] = account;
         numberOfAccountsInUse++;
 
-        return account.accountNumber;
+        return accountNumber;
     }
 
     // 1-b-b-ii
@@ -60,7 +62,7 @@ public class Bank {
         return true;
     }
 
-    // 1-b-b-iii
+    // 1-b-b-iii, 2-c
     public double totalMoneyInBank() {
         double total = 0;
 
@@ -68,7 +70,7 @@ public class Bank {
             if ( account == null ) {
                 break;
             } else {
-                total += account.balance;
+                total += account.getBalance();
             }
         }
 
@@ -77,6 +79,7 @@ public class Bank {
 
 
     // Helper Methods
+    // 2-c
     /**
      *
      * @param accountNumber as specified by Customer
@@ -92,7 +95,7 @@ public class Bank {
         for ( Account account : accounts ) {
             if (account == null) {          // Because of continuous list, when 'null' is found, the accountNumber doesn't exist
                 return null;
-            } else if (account.accountNumber == accountNumber) {
+            } else if (account.getAccountNumber() == accountNumber) {
                 return account;
             }
         }
