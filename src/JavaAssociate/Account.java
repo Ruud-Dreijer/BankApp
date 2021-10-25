@@ -5,6 +5,10 @@ public class Account {
     private int accountNumber;
     private double balance;
 
+    // 3-a
+    private static final double INTEREST_ON_POSITIVE_BALANCE = 0.1;
+    private static final double INTEREST_ON_NEGATIVE_BALANCE = 0.5;
+
     // Constructor
     // 1-a-b
     public Account(int accountNumber, double balance) {
@@ -32,5 +36,20 @@ public class Account {
     // 1-a-c-ii
     public double withdraw(double amount) {
         return ( balance -= amount );
+    }
+
+    // 3-a
+    public double processInterest() {
+        double interest;
+
+        if ( balance < 0 ) {
+            interest = ( INTEREST_ON_NEGATIVE_BALANCE / 100 ) * balance;
+        } else {
+            interest = ( INTEREST_ON_POSITIVE_BALANCE / 100 ) * balance;
+        }
+
+        balance += interest;
+
+        return interest;
     }
 }

@@ -77,6 +77,21 @@ public class Bank {
         return total;
     }
 
+    // 3-a
+    public double processAnnualInterest() {
+        double totalInterestCalculated = 0.0;
+
+        for (Account account: accounts) {
+            if (account == null) {
+                break;
+            } else {
+                totalInterestCalculated += account.processInterest();
+            }
+        }
+
+        return totalInterestCalculated;
+    }
+
 
     // Helper Methods
     // 2-c

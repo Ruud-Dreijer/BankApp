@@ -62,5 +62,14 @@ public class Test {
         // Show Money in the Bank
         System.out.println("Total amount in the Bank = " + ingBank.totalMoneyInBank());
         System.out.println();
+
+        // Process Annual Interest
+        // 3-a
+        System.out.printf("Total interest calculated = %.2f", ingBank.processAnnualInterest());
+        System.out.println();
+
+        // Show Money in the Bank
+        System.out.printf("Total amount in the Bank = %.2f", ingBank.totalMoneyInBank());
+        System.out.println();
     }
 }
