@@ -71,5 +71,19 @@ public class Test {
         // Show Money in the Bank
         System.out.printf("Total amount in the Bank = %.2f", ingBank.totalMoneyInBank());
         System.out.println();
+        System.out.println();
+
+        // Remove Accounts
+        // 3-b
+        ingBank.removeAccount(account1);                                    // Delete Account and handle balance with Customer
+        ingBank.removeAccount(account2, account3);                          // Delete Account and transfer balance
+        ingBank.removeAccount(12345);                  // Delete, invalid accountNumber
+        ingBank.removeAccount(account4, 12345);      // Delete, invalid accountNumber
+        ingBank.removeAccount(account4, account4);                          // Delete, both accounts are the same
+
+        // Show Money in the Bank
+        System.out.println();
+        System.out.printf("Total amount in the Bank = %.2f", ingBank.totalMoneyInBank());
+        System.out.println();
     }
 }
