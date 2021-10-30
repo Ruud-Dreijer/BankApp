@@ -63,7 +63,7 @@ public class Bank {
 
                     break;
                 case 3:         // Show Balance
-                    int accountNumber = bank.getIntFromInput("What is the Accountnumber: ", scanUserInput);
+                    int accountNumber = getIntFromInput("What is the Accountnumber: ", scanUserInput);
 
                     System.out.printf("Balance of Account %d is %5.2f EURO %n", accountNumber, bank.findAccount(accountNumber).getBalance());
 
@@ -104,7 +104,7 @@ public class Bank {
     }
 
     // 4-a
-    public void transfer( Scanner scanUserInput ) {
+    private void transfer( Scanner scanUserInput ) {
         System.out.println("************************************");
         System.out.println("*                                  *");
         System.out.println("* Transfer between Accounts        *");
@@ -130,7 +130,7 @@ public class Bank {
     }
 
     // 4-a
-    public void deposit( Scanner scanUserInput ) {
+    private void deposit( Scanner scanUserInput ) {
         System.out.println("************************************");
         System.out.println("*                                  *");
         System.out.println("* Deposit into an Account          *");
@@ -148,7 +148,7 @@ public class Bank {
     }
 
     // 4-a
-    public void withdraw( Scanner scanUserInput ) {
+    private void withdraw( Scanner scanUserInput ) {
         System.out.println("************************************");
         System.out.println("*                                  *");
         System.out.println("* Withdraw from an Account         *");
@@ -166,7 +166,7 @@ public class Bank {
     }
 
     // 4-a
-    public void removeAccount( Scanner scanUserInput ) {
+    private void removeAccount( Scanner scanUserInput ) {
         System.out.println("************************************");
         System.out.println("*                                  *");
         System.out.println("* Removing an Account              *");
@@ -221,7 +221,7 @@ public class Bank {
      * @return accountNumber of specific account to be returned to Customer
      *
      */
-    public int openAccount( Scanner scanUserInput ) {
+    private int openAccount( Scanner scanUserInput ) {
         System.out.println("************************************");
         System.out.println("*                                  *");
         System.out.println("* Opening an Account               *");
@@ -243,7 +243,7 @@ public class Bank {
     }
 
     // 3-b, 4-a
-    public void removeAccount(Account accountToRemove) {
+    private void removeAccount(Account accountToRemove) {
         removeAccountFromArray(accountToRemove);
 
         double balance = accountToRemove.getBalance();
@@ -255,7 +255,7 @@ public class Bank {
     }
 
     // 3-b, 4-a
-    public void removeAccount(Account accountToRemove, Account accountToTransferTo) {
+    private void removeAccount(Account accountToRemove, Account accountToTransferTo) {
         double balance = accountToRemove.getBalance();
 
         if (transfer(accountToRemove, accountToTransferTo, balance)) {
@@ -266,7 +266,7 @@ public class Bank {
     }
 
     // 1-b-b-ii, 4-a
-    public boolean transfer( Account accountFrom, Account accountTo, double amount ) {
+    private boolean transfer( Account accountFrom, Account accountTo, double amount ) {
         // Checks on accountNumbers supplied
         if ( accountFrom == accountTo ) {
             System.out.println("Transfer Money: Accounts specified are the same, no transfer executed");
@@ -289,7 +289,7 @@ public class Bank {
     }
 
     // 1-b-b-iii, 2-c
-    public double totalMoneyInBank() {
+    private double totalMoneyInBank() {
         double total = 0;
 
         for ( Account account : accounts ) {
@@ -304,7 +304,7 @@ public class Bank {
     }
 
     // 3-a
-    public double processAnnualInterest() {
+    private double processAnnualInterest() {
         double totalInterestCalculated = 0.0;
 
         for (Account account: accounts) {
@@ -340,7 +340,7 @@ public class Bank {
      * When checking the Array, both 'null' and numberOfAccountsInUse can be used to be sure that all Accounts have been reviewed
      *
      */
-    public Account findAccount( int accountNumber ) {
+    private Account findAccount( int accountNumber ) {
         for ( Account account : accounts ) {
             if (account == null) {          // Because of continuous list, when 'null' is found, the accountNumber doesn't exist
                 return null;
@@ -392,13 +392,13 @@ public class Bank {
 
     // Scanner Methods
     // 4-a
-    public int getIntFromInput(String printText, Scanner scanUserInput) {
+    private static int getIntFromInput(String printText, Scanner scanUserInput) {
         System.out.print(printText);
         return scanUserInput.nextInt();
     }
 
     // 4-a
-    public double getDoubleFromInput(String printText, Scanner scanUserInput) {
+    private static double getDoubleFromInput(String printText, Scanner scanUserInput) {
         System.out.print(printText);
         return scanUserInput.nextDouble();
     }
