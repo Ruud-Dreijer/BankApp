@@ -16,85 +16,268 @@ public class Bank {
         accounts = new Account[ MAXACCOUNTS ];
     }
 
+    // Menu Methods
+    // 4-a
+    private static void showMenu() {
+        System.out.println("*****************************************");
+        System.out.println("*                                       *");
+        System.out.println("* Account functions:                    *");
+        System.out.println("* 1. Open an Account                    *");
+        System.out.println("* 2. Remove an Account                  *");
+        System.out.println("* 3. Show Balance of Account            *");
+        System.out.println("* 4. Withdraw from Account              *");
+        System.out.println("* 5. Deposit into Account               *");
+        System.out.println("* 6. Transfer between Accounts          *");
+        System.out.println("*                                       *");
+        System.out.println("* Management functions:                 *");
+        System.out.println("* 11. Show all Accountnumbers           *");
+        System.out.println("* 12. Process annual interest           *");
+        System.out.println("* 13. Show total Balance on Accounts    *");
+        System.out.println("*                                       *");
+        System.out.println("* Other functions:                      *");
+        System.out.println("* 99. Stop programma                    *");
+        System.out.println("*                                       *");
+        System.out.println("*****************************************");
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.print("Make a selection from the Menu: ");
+    }
+
+    // 4-a
+    public static void showMenuAndProcesSelectedChoice(Bank bank)  {
+        // Create Object to retrieve User input
+        Scanner scanUserInput = new Scanner(System.in);
+
+        menu: while (true) {
+            showMenu();
+
+            int menuSelection = scanUserInput.nextInt();
+            switch(menuSelection) {
+                case 1:         // Open an Account
+                    bank.openAccount(scanUserInput);
+
+                    break;
+                case 2:         // Remove an Account, handle Balance
+                    bank.removeAccount(scanUserInput);
+
+                    break;
+                case 3:         // Show Balance
+                    int accountNumber = bank.getIntFromInput("What is the Accountnumber: ", scanUserInput);
+
+                    System.out.printf("Balance of Account %d is %5.2f EURO %n", accountNumber, bank.findAccount(accountNumber).getBalance());
+
+                    break;
+                case 4:         // Withdraw
+                    bank.withdraw(scanUserInput);
+
+                    break;
+                case 5:         // Deposit
+                    bank.deposit(scanUserInput);
+
+                    break;
+                case 6:         // Transfer
+                    bank.transfer(scanUserInput);
+
+                    break;
+                case 11:         // Show all Accountnumbers
+                    bank.showAllAccounts();
+
+                    break;
+                case 12:         // Verwerk jaarlijkse rente
+                    System.out.printf("Total interest processed = %.2f", bank.processAnnualInterest());
+                    System.out.println();
+
+                    break;
+                case 13:         // Geld in Bank
+                    System.out.printf("Total amount on all Accounts = %.2f", bank.totalMoneyInBank());
+                    System.out.println();
+
+                    break;
+                case 99:
+                    break menu;
+                default:
+                    System.out.println();
+                    System.out.println("Invalid entry, choose one of the menu options: ");
+            }
+        }
+    }
+
+    // 4-a
+    public void transfer( Scanner scanUserInput ) {
+        System.out.println("************************************");
+        System.out.println("*                                  *");
+        System.out.println("* Transfer between Accounts        *");
+        System.out.println("*                                  *");
+        System.out.println("************************************");
+
+        // get input
+        int accountNumberFrom = getIntFromInput("What is the Accountnumber (from): ", scanUserInput);
+        int accountNumberTo = getIntFromInput("What is the Accountnumber (to): ", scanUserInput);
+        double amount = getDoubleFromInput("What is the amount you want to transfer: ", scanUserInput);
+        Account accountFrom = findAccount(accountNumberFrom);
+        Account accountTo = findAccount(accountNumberTo);
+
+        System.out.println("Balance on Accountnumer " + accountNumberFrom + " before withdrawal of " + amount + " euro, was " + accountFrom.getBalance() + " euro");
+        System.out.println("Balance on Accountnumer " + accountNumberTo + " before deposit of " + amount + " euro, was " + accountTo.getBalance() + " euro");
+
+        if (transfer(accountFrom, accountTo, amount)) {
+            System.out.println("New balance on Accountnumer " + accountNumberFrom + " is " + accountFrom.getBalance() + " euro");
+            System.out.println("New balance on Accountnumer " + accountNumberTo + " is " + accountTo.getBalance() + " euro");
+        } else {
+            System.out.println("Transfer failed");
+        }
+    }
+
+    // 4-a
+    public void deposit( Scanner scanUserInput ) {
+        System.out.println("************************************");
+        System.out.println("*                                  *");
+        System.out.println("* Deposit into an Account          *");
+        System.out.println("*                                  *");
+        System.out.println("************************************");
+
+        // get input
+        int accountNumber = getIntFromInput("What is the Accountnumber: ", scanUserInput);
+        double amount = getDoubleFromInput("What is the amount you want to deposit: ", scanUserInput);
+        Account account = findAccount(accountNumber);
+
+        // write output
+        System.out.println("Balance of Accountnumber " + accountNumber + " before deposit of " + amount + " euro, was " + account.getBalance() + " euro");
+        System.out.println("New balance is: " + account.deposit(amount));
+    }
+
+    // 4-a
+    public void withdraw( Scanner scanUserInput ) {
+        System.out.println("************************************");
+        System.out.println("*                                  *");
+        System.out.println("* Withdraw from an Account         *");
+        System.out.println("*                                  *");
+        System.out.println("************************************");
+
+        // get input
+        int accountNumber = getIntFromInput("What is the Accountnumber: ", scanUserInput);
+        double amount = getDoubleFromInput("What is the amount you want to withdraw: ", scanUserInput);
+        Account account = findAccount(accountNumber);
+
+        // write output
+        System.out.println("Balance of Accountnumber " + accountNumber + " before withdrawal of " + amount + " euro, was " + account.getBalance() + " euro");
+        System.out.println("New balance is: " + account.withdraw(amount));
+    }
+
+    // 4-a
+    public void removeAccount( Scanner scanUserInput ) {
+        System.out.println("************************************");
+        System.out.println("*                                  *");
+        System.out.println("* Removing an Account              *");
+        System.out.println("*                                  *");
+        System.out.println("************************************");
+
+        // Get Accountnumber to remove
+        Account accountToRemove = findAccount( getIntFromInput("What is the Accountnumber, which must be removed: ", scanUserInput) );
+
+        if ( accountToRemove == null ) {
+            System.out.println("removeAccount: The account (from) specified does not exist");
+            return;
+        }
+
+        // Handle balance or transfer
+        int cashOrTransfer = getIntFromInput("Will the Balance be handled in cash (1) or transfered (2): ", scanUserInput);
+
+        if ( cashOrTransfer == 1 ) {
+
+            // Remove Account, handle Balance
+            removeAccount( accountToRemove );
+
+        } else if ( cashOrTransfer == 2 ) {
+
+            // Get Accountnumber to transfer to
+            Account accountToTransferTo = findAccount( getIntFromInput("What is the Accountnumber, to transfer to: ", scanUserInput) );
+
+            if ( accountToTransferTo == null ) {
+                System.out.println("removeAccount: The account (to) specified does not exist");
+                return;
+            } else if ( accountToRemove == accountToTransferTo ) {
+                System.out.println("removeAccount: Accounts specified are the same, no transfer executed");
+                return;
+            } else {
+                // Remove Account, transfer Balance
+                removeAccount( accountToRemove, accountToTransferTo );
+            }
+
+        } else {
+
+            System.out.println("removeAccount: Invalid entry, choose 1 or 2");
+            return;
+
+        }
+    }
+
     // Basic Methods
-    // 1-b-b-i, 2-c
+    // 1-b-b-i, 2-c, 4-a
     /**
      *
-     * @param amount as deposited by Customer on opening of Account
+     * @param scanUserInput for reuse of Scanner Object
      * @return accountNumber of specific account to be returned to Customer
      *
      */
-    public int openAccount( double amount ) {
+    public int openAccount( Scanner scanUserInput ) {
+        System.out.println("************************************");
+        System.out.println("*                                  *");
+        System.out.println("* Opening an Account               *");
+        System.out.println("*                                  *");
+        System.out.println("************************************");
+
+        // Generate the Accountnumber for the Account
         int accountNumber = generateAccountNumber();
 
-        Account account = new Account ( accountNumber, amount );
+        // Store Account Object
+        accounts[ numberOfAccountsInUse ] = new Account ( accountNumber, getDoubleFromInput("What will be the initial balance: ", scanUserInput) );
 
-        accounts[ numberOfAccountsInUse ] = account;
+        // Increase number of Accounts in use
         numberOfAccountsInUse++;
+
+        System.out.println("Account created, number: " + accountNumber);
 
         return accountNumber;
     }
 
-    // 3-b
-    public void removeAccount(int accountNumberToRemove) {
-        double balance;
+    // 3-b, 4-a
+    public void removeAccount(Account accountToRemove) {
+        removeAccountFromArray(accountToRemove);
 
-        Account accountToRemove = findAccount( accountNumberToRemove );
+        double balance = accountToRemove.getBalance();
+        if ( balance > 0.0 ) {
+            System.out.println("Account " + accountToRemove.getAccountNumber() + " is removed. Balance of " + accountToRemove.getBalance() + " must be paid to Customer in cash");
+        } else if ( balance < 0.0 ) {
+            System.out.println("Account " + accountToRemove.getAccountNumber() + " is removed. Balance of " + accountToRemove.getBalance() + " must be paid by Customer in cash");
+        }
+    }
 
-        if ( accountToRemove == null ) {
-            System.out.println("removeAccount: The account specified does not exist");
-        } else {
+    // 3-b, 4-a
+    public void removeAccount(Account accountToRemove, Account accountToTransferTo) {
+        double balance = accountToRemove.getBalance();
+
+        if (transfer(accountToRemove, accountToTransferTo, balance)) {
+            System.out.println("Account " + accountToRemove.getAccountNumber() + " is removed. Balance of " + balance + " is transfered to account " + accountToTransferTo.getAccountNumber());
+
             removeAccountFromArray(accountToRemove);
-
-            balance = accountToRemove.getBalance();
-            if ( balance > 0.0 ) {
-                System.out.println("Account " + accountNumberToRemove + " is removed. Balance of " + balance + " must be paid to Customer in cash");
-            } else if ( balance < 0.0 ) {
-                System.out.println("Account " + accountNumberToRemove + " is removed. Balance of " + balance + " must be paid by Customer in cash");
-            }
         }
     }
 
-    // 3-b
-    public void removeAccount(int accountNumberToRemove, int accountNumberToTransferTo) {
-        if ( accountNumberToRemove == accountNumberToTransferTo ) {
-            System.out.println("removeAccount: Accounts specified are the same, no transfer executed");
-        } else {
-            Account accountToRemove = findAccount(accountNumberToRemove);
-            Account accountToTransferTo = findAccount(accountNumberToTransferTo);
-
-            if ( accountToRemove == null || accountToTransferTo == null) {
-                System.out.println("removeAccount: One of the accounts specified does not exist");
-            } else {
-                double balance = accountToRemove.getBalance();
-
-                if (transfer(accountNumberToRemove, accountNumberToTransferTo, balance)) {
-                    removeAccountFromArray(accountToRemove);
-
-                    System.out.println("Account " + accountNumberToRemove + " is removed. Balance of " + balance + " is transfered to account " + accountNumberToTransferTo);
-                }
-            }
-        }
-    }
-
-    // 1-b-b-ii
-    public boolean transfer( int accountNumberFrom, int accountNumberTo, double amount ) {
-        Account accountFrom;
-        Account accountTo;
-
+    // 1-b-b-ii, 4-a
+    public boolean transfer( Account accountFrom, Account accountTo, double amount ) {
         // Checks on accountNumbers supplied
-        if ( accountNumberFrom == accountNumberTo ) {
+        if ( accountFrom == accountTo ) {
             System.out.println("Transfer Money: Accounts specified are the same, no transfer executed");
             return false;
         }
 
-        accountFrom = findAccount(accountNumberFrom);
         if ( accountFrom == null ) {
             System.out.println("Transfer Money: Account (from) does not exist, no transfer executed");
             return false;
         }
 
-        accountTo = findAccount(accountNumberTo);
         if ( accountTo == null ) {
             System.out.println("Transfer Money: Account (to) does not exist, no transfer executed");
             return false;
@@ -135,6 +318,14 @@ public class Bank {
         return totalInterestCalculated;
     }
 
+    // The array is a continuous list, from left to right
+    // So, 'numberOfAccountsInUse'  can be used to find all Accounts
+    private void showAllAccounts() {
+        for ( int counter = 0; counter < numberOfAccountsInUse; counter++) {
+            System.out.print(accounts[ counter ].getAccountNumber() + " (" + accounts[ counter ]. getBalance() + ")  ");
+        }
+        System.out.println();
+    }
 
     // Helper Methods
     // 2-c
@@ -197,5 +388,18 @@ public class Bank {
         } else {
             System.out.println("There are no accounts to remove");
         }
+    }
+
+    // Scanner Methods
+    // 4-a
+    public int getIntFromInput(String printText, Scanner scanUserInput) {
+        System.out.print(printText);
+        return scanUserInput.nextInt();
+    }
+
+    // 4-a
+    public double getDoubleFromInput(String printText, Scanner scanUserInput) {
+        System.out.print(printText);
+        return scanUserInput.nextDouble();
     }
 }
