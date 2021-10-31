@@ -1,19 +1,23 @@
 package JavaAssociate;
 
-import java.util.Random;
-import java.util.Scanner;
+import java.util.*;
 
 public class Bank {
     // 1-b-a, 2-a
-    private Account[] accounts;
+//    private Account[] accounts;
     private int numberOfAccountsInUse = 0;
-    private final static int MAXACCOUNTS = 10;
+//    private final static int MAXACCOUNTS = 10;
+
+    // Inner List = { accountNumber, account }; two different types (int, account), so Object
+    // Outer List = { {<inner list>} }
+    // Define Array as a list of (list of Objects), no size
+    // 5-a
+    private ArrayList<ArrayList<Object>> accounts = new ArrayList<>();     // Definitie Buitenste Array zonder grootte
 
     // Constructor
-    // 1-b-a
+    // 1-b-a, 5-b
     public Bank() {
-        // Create storage for MAXACCOUNTS accounts
-        accounts = new Account[ MAXACCOUNTS ];
+        System.out.println("BankApp Initialized");
     }
 
     // Menu Methods
@@ -214,7 +218,7 @@ public class Bank {
     }
 
     // Basic Methods
-    // 1-b-b-i, 2-c, 4-a
+    // 1-b-b-i, 2-c, 4-a, 5-b
     /**
      *
      * @param scanUserInput for reuse of Scanner Object
@@ -232,7 +236,12 @@ public class Bank {
         int accountNumber = generateAccountNumber();
 
         // Store Account Object
-        accounts[ numberOfAccountsInUse ] = new Account ( accountNumber, getDoubleFromInput("What will be the initial balance: ", scanUserInput) );
+        // Create new Inner block, size 2
+        accounts.add(new ArrayList<Object>(2));
+
+        // Write two values to created empty Inner Block
+        accounts.get(numberOfAccountsInUse).add(0, accountNumber);
+        accounts.get(numberOfAccountsInUse).add(1, new Account ( accountNumber, getDoubleFromInput("What will be the initial balance: ", scanUserInput) ));
 
         // Increase number of Accounts in use
         numberOfAccountsInUse++;
@@ -244,14 +253,14 @@ public class Bank {
 
     // 3-b, 4-a
     private void removeAccount(Account accountToRemove) {
-        removeAccountFromArray(accountToRemove);
-
         double balance = accountToRemove.getBalance();
         if ( balance > 0.0 ) {
             System.out.println("Account " + accountToRemove.getAccountNumber() + " is removed. Balance of " + accountToRemove.getBalance() + " must be paid to Customer in cash");
         } else if ( balance < 0.0 ) {
             System.out.println("Account " + accountToRemove.getAccountNumber() + " is removed. Balance of " + accountToRemove.getBalance() + " must be paid by Customer in cash");
         }
+
+        removeAccountFromArray(accountToRemove);
     }
 
     // 3-b, 4-a
@@ -288,47 +297,46 @@ public class Bank {
         return true;
     }
 
-    // 1-b-b-iii, 2-c
+    // 1-b-b-iii, 2-c, 5-b
     private double totalMoneyInBank() {
         double total = 0;
+        Account account;
 
-        for ( Account account : accounts ) {
-            if ( account == null ) {
-                break;
-            } else {
-                total += account.getBalance();
-            }
+        for (int counter = 0; counter < numberOfAccountsInUse; counter++) {
+            account = (Account) accounts.get( counter ).get(1);
+            total += account.getBalance();
         }
 
         return total;
     }
 
-    // 3-a
+    // 3-a, 5-b
     private double processAnnualInterest() {
         double totalInterestCalculated = 0.0;
+        Account account;
 
-        for (Account account: accounts) {
-            if (account == null) {
-                break;
-            } else {
-                totalInterestCalculated += account.processInterest();
-            }
+        for (int counter = 0; counter < numberOfAccountsInUse; counter++) {
+            account = (Account) accounts.get( counter ).get(1);
+            totalInterestCalculated += account.processInterest();
         }
 
         return totalInterestCalculated;
     }
 
-    // The array is a continuous list, from left to right
-    // So, 'numberOfAccountsInUse'  can be used to find all Accounts
+    // 5-b
     private void showAllAccounts() {
-        for ( int counter = 0; counter < numberOfAccountsInUse; counter++) {
-            System.out.print(accounts[ counter ].getAccountNumber() + " (" + accounts[ counter ]. getBalance() + ")  ");
+        Account account;
+
+        for (int counter = 0; counter < numberOfAccountsInUse; counter++) {
+            account = (Account) accounts.get( counter ).get(1);
+            System.out.print(accounts.get( counter ).get(0) + " (" + account.getBalance() + ")  ");
         }
+
         System.out.println();
     }
 
     // Helper Methods
-    // 2-c
+    // 2-c, 5-b
     /**
      *
      * @param accountNumber as specified by Customer
@@ -341,15 +349,13 @@ public class Bank {
      *
      */
     private Account findAccount( int accountNumber ) {
-        for ( Account account : accounts ) {
-            if (account == null) {          // Because of continuous list, when 'null' is found, the accountNumber doesn't exist
-                return null;
-            } else if (account.getAccountNumber() == accountNumber) {
-                return account;
+        for (int counter = 0; counter < numberOfAccountsInUse; counter++) {
+            if ( (int) accounts.get( counter ).get(0) == accountNumber ) {
+                return (Account) accounts.get( counter ).get(1);
             }
         }
 
-        return null;                        // When Array is full, but accountNumber still isn't found, 'null' should be returned
+        return null;
     }
 
     // 1-b-b-i
@@ -357,29 +363,21 @@ public class Bank {
         return new Random().nextInt(5000);
     }
 
-    // 3-b
-    // An Array (' accounts') is used, to store Account objects
-    // This Array is initialiazed with 'null'  at first, and filled from left (0) to right (MAXACCOUNTS-1) with new Accounts
-    // That means that the Array is a continuous list op opened Accounts, until 'null' is found or (numberOfAccountsInUse-1) Accounts have been read
-    //
-    // This also means, that when an Account is removed, this continuous list must still remain
-    // So, when Accounts are removed from the list, other Accounts need to shift in the Array
+    // 3-b, 5-b
     private void removeAccountFromArray(Account account ) {
         if ( numberOfAccountsInUse > 0 ) {
+            int counter;
             boolean accountFound = false;
 
-            for (int counter = 0; counter < numberOfAccountsInUse; counter++) {
-                if (accounts[counter] == account) {
+            for (counter = 0; counter < numberOfAccountsInUse; counter++) {
+                if ( accounts.get( counter ).get(1) == account ) {
                     accountFound = true;
-
-                    for (; counter < numberOfAccountsInUse - 1; counter++) {
-                        accounts[counter] = accounts[counter + 1];
-                    }
+                    break;
                 }
             }
 
             if ( accountFound ) {
-                accounts[numberOfAccountsInUse - 1] = null;
+                accounts.remove( counter );
                 numberOfAccountsInUse--;
             } else {
                 System.out.println("The account specified does not exist");
